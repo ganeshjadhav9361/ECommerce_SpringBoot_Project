@@ -30,9 +30,10 @@ public class JwtUtils {
 	@Value("${spring.app.jwtSecret}")
 	private String jwtSecret;
 
-	@Value("${spring.ecom.app.jwtCookieName}")
-	private String jwtExpirationMs;
+	@Value("${spring.app.jwtExpirationMs}")
+	private Long jwtExpirationMs;
 
+	@Value("${spring.app.jwtCookieName}")
 	private String jwtCookie;
 
 //	public String getJwtFromHeader(HttpServletRequest request) {
@@ -47,17 +48,22 @@ public class JwtUtils {
 	public String getJwtFromCookies(HttpServletRequest request) {
 		Cookie cookie = WebUtils.getCookie(request, jwtCookie);
 
-		if (cookie == null) {
+		if (cookie != null) {
 			return cookie.getValue();
 		}
 		return null;
-
 	}
 
 	public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
 		String jwt = generateTokenFromUsername(userPrincipal.getUsername());
 		ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(false)
 				.build();
+
+		return cookie;
+	}
+
+	public ResponseCookie getCleanJwtCookie() {
+		ResponseCookie cookie = ResponseCookie.from(jwtCookie, null).path("/api").build();
 
 		return cookie;
 	}

@@ -5,23 +5,23 @@ import java.util.List;
 public class LoginResponse {
 
 	private Long id;
-	private String jwtToken;
+	private String jwtCookie;
 	private String username;
 	private List<String> roles;
 
-	public LoginResponse(Long id, String username, List<String> roles, String jwtToken) {
+	public LoginResponse(Long id, String username, List<String> roles, String jwtCookie) {
 		this.id = id;
-		this.jwtToken = jwtToken;
+		this.jwtCookie = jwtCookie;
 		this.username = username;
 		this.roles = roles;
 	}
 
-	public String getJwtToken() {
-		return jwtToken;
+	public String getJwtCookie() {
+		return jwtCookie;
 	}
 
-	public void setJwtToken(String jwtToken) {
-		this.jwtToken = jwtToken;
+	public void setJwtCookie(String jwtCookie) {
+		this.jwtCookie = jwtCookie;
 	}
 
 	public String getUsername() {

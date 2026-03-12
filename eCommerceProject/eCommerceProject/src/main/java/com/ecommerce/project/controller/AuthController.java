@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -132,5 +133,35 @@ public class AuthController {
 		userRepository.save(user);
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully"));
+	}
+
+	@GetMapping("/username")
+	public String currentUserName(Authentication authentication) {
+		if (authentication != null) {
+			return authentication.getName();
+		}
+
+		return "";
+	}
+
+	@GetMapping("/user")
+	public ResponseEntity<?> getUserDetails(Authentication authentication) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+				.collect(Collectors.toList());
+
+		LoginResponse response = new LoginResponse(userDetails.getId(), userDetails.getUsername(), roles, null);
+
+		return ResponseEntity.ok().body(response);
+
+	}
+
+	@PostMapping("/signout")
+	public ResponseEntity<?> signoutUser() {
+		ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("You've been signed out...!");
+
 	}
 }
