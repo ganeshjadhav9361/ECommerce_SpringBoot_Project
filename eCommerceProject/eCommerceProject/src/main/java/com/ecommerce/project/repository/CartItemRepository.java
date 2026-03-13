@@ -1,11 +1,14 @@
 package com.ecommerce.project.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 import com.ecommerce.project.model.CartItem;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
-	CartItem findCartItemByProductIdAndCArtId(Long cartId, Long productId);
+	CartItem findByProductProductIdAndCartCartId(Long productId, Long cartId);
 
+	@Modifying
+	void deleteByProductProductIdAndCartCartId(Long cartId, Long productId);
 }
