@@ -227,6 +227,7 @@ public class CartServiceImpl implements CartService {
 		return cartDTO;
 	}
 
+	@Transactional
 	@Override
 	public String deleteProductFromCart(Long cartId, Long productId) {
 		Cart cart = cartRepository.findById(cartId)
@@ -243,6 +244,28 @@ public class CartServiceImpl implements CartService {
 		cartItemRepository.deleteByProductProductIdAndCartCartId(cartId, productId);
 
 		return "Product " + cartItem.getProduct().getProductName() + " Remove from the cart!!!";
+	}
+
+	@Override
+	public Object UpdateProductsInCarts(Long cartId, Long productId) {
+		Cart cart = cartRepository.findById(cartId)
+				.orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
+
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+		CartItem cartItem = cartItemRepository.findByProductProductIdAndCartCartId(productId, cartId);
+
+		if (cartItem == null) {
+			throw new APIException("Product " + product.getProductName() + " not available in the cart!!!");
+		}
+
+		double cartPrice = cart.getTotalPrice() - (cartItem.getProductPrice() * cartItem.getQuantity());
+		cartItem.setProductPrice(product.getSpecialPrice());
+		cart.setTotalPrice(cartPrice + (cartItem.getProductPrice() * cartItem.getQuantity()));
+
+		cartItem = cartItemRepository.save(cartItem);
+		return null;
 	}
 
 }
