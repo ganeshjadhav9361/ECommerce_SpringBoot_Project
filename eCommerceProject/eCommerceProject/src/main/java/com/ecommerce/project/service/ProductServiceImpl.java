@@ -179,7 +179,7 @@ public class ProductServiceImpl implements ProductService {
 
 		Product savedProduct = productRepository.save(productFromDb);
 
-		List<Cart> carts = cartRepository.findCartsByProductId(productId);
+		List<Cart> carts = cartRepository.findByCartItemsProductProductId(productId);
 
 		List<CartDTO> cartDTOs = carts.stream().map(cart -> {
 			CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);

@@ -1,26 +1,23 @@
 package com.ecommerce.project.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "addresess")
+@Table(name = "addresses")
 public class Address {
 
 	@Id
@@ -51,9 +48,9 @@ public class Address {
 	@Size(min = 6, message = "Pincode name must be atleast 6 characters")
 	private String pincode;
 
-	@ToString.Exclude
-	@ManyToMany(mappedBy = "addresess")
-	private List<User> user = new ArrayList<>();
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	public Address(String street, String buildingName, String city, String state, String country, String pincode) {
 		this.street = street;
