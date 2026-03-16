@@ -230,10 +230,11 @@ public class CartServiceImpl implements CartService {
 	@Transactional
 	@Override
 	public String deleteProductFromCart(Long cartId, Long productId) {
+
 		Cart cart = cartRepository.findById(cartId)
 				.orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
 
-		CartItem cartItem = cartItemRepository.findByProductProductIdAndCartCartId(cartId, productId);
+		CartItem cartItem = cartItemRepository.findByProductProductIdAndCartCartId(productId, cartId);
 
 		if (cartItem == null) {
 			throw new ResourceNotFoundException("Product", "productId", productId);
@@ -241,7 +242,7 @@ public class CartServiceImpl implements CartService {
 
 		cart.setTotalPrice(cart.getTotalPrice() - (cartItem.getProductPrice() * cartItem.getQuantity()));
 
-		cartItemRepository.deleteByProductProductIdAndCartCartId(cartId, productId);
+		cartItemRepository.deleteByProductProductIdAndCartCartId(productId, cartId);
 
 		return "Product " + cartItem.getProduct().getProductName() + " Remove from the cart!!!";
 	}

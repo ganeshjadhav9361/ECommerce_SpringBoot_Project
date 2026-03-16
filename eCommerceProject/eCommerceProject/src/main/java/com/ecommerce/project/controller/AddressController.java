@@ -1,9 +1,15 @@
 package com.ecommerce.project.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +22,7 @@ import com.ecommerce.project.util.AuthUtil;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api")
 public class AddressController {
 
 	@Autowired
@@ -32,4 +38,41 @@ public class AddressController {
 
 		return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
 	}
+
+	@GetMapping("/addresses")
+	public ResponseEntity<List<AddressDTO>> getAddress() {
+		List<AddressDTO> addressDTOList = addressService.getAddress();
+
+		return new ResponseEntity<>(addressDTOList, HttpStatus.OK);
+	}
+
+	@GetMapping("/addresses/{addressId}")
+	public ResponseEntity<AddressDTO> getAddressByID(@PathVariable Long addressId) {
+		AddressDTO addressDTO = addressService.getAddressById(addressId);
+
+		return new ResponseEntity<>(addressDTO, HttpStatus.OK);
+	}
+
+	@GetMapping("/user/addresses")
+	public ResponseEntity<List<AddressDTO>> getUserAddress() {
+		User user = authUtil.loggedInUser();
+		List<AddressDTO> addressDTO = addressService.getUserAddress(user);
+
+		return new ResponseEntity<>(addressDTO, HttpStatus.OK);
+	}
+
+	@PutMapping("/addresses/{addressId}")
+	public ResponseEntity<AddressDTO> updateAddress(@PathVariable Long addressId, @RequestBody AddressDTO addressDTO) {
+		AddressDTO updatedAddress = addressService.updateAddress(addressId, addressDTO);
+
+		return new ResponseEntity<>(updatedAddress, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/addresses/{addressId}")
+	public ResponseEntity<String> deleteAddress(@PathVariable Long addressId) {
+		String status = addressService.deleteAddress(addressId);
+
+		return new ResponseEntity<>(status, HttpStatus.OK);
+	}
+
 }
