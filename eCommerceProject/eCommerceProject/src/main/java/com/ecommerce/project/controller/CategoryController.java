@@ -19,6 +19,11 @@ import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.service.CategoryService;
 import com.ecommerce.project.service.CategoryServiceImpl;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
@@ -36,6 +41,7 @@ public class CategoryController {
 		this.categoryServiceImpl = categoryServiceImpl;
 	}
 
+	@Tag(name = "Category APIs", description = "APIs for managing categories")
 	@GetMapping("/public/categories")
 	// @RequestMapping(value = "/public/categories", method = RequestMethod.GET)
 	public ResponseEntity<CategoryResponse> getAllCategories(
@@ -48,6 +54,11 @@ public class CategoryController {
 		return new ResponseEntity<>(categoryRespons, HttpStatus.OK);
 	}
 
+	@Tag(name = "Category APIs", description = "APIs for managing categories")
+	@Operation(summary = "Add category", description = "API to add a new category")
+	@ApiResponses({ @ApiResponse(responseCode = "201", description = "Category is created successfully"),
+			@ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PostMapping("/public/categories")
 	// @RequestMapping(value = "/public/categories", method = RequestMethod.POST)
 	public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
@@ -55,6 +66,7 @@ public class CategoryController {
 		return new ResponseEntity<>(savedCategoryDTO, HttpStatus.CREATED);
 	}
 
+	@Tag(name = "Category APIs", description = "APIs for managing categories")
 	@DeleteMapping("/admin/categories/{categoryId}")
 	// @RequestMapping(value = "/admin/categories/{categoryId}", method
 	// =RequestMethod.DELETE)
@@ -64,6 +76,7 @@ public class CategoryController {
 		return new ResponseEntity<>(deletedCategoryDTO, HttpStatus.OK);
 	}
 
+	@Tag(name = "Category APIs", description = "APIs for managing categories")
 	@PutMapping("/public/categories/{categoryId}")
 	// @RequestMapping(value = "/public/categories/{categoryId}", method =
 	// RequestMethod.PUT)

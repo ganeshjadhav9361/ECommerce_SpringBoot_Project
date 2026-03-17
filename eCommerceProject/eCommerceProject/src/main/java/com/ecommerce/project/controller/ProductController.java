@@ -21,6 +21,12 @@ import com.ecommerce.project.payload.ProductDTO;
 import com.ecommerce.project.payload.ProductResponse;
 import com.ecommerce.project.service.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
@@ -29,14 +35,21 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 
+	@Tag(name = "Product APIs", description = "APIs for managing products")
+	@Operation(summary = "Add product", description = "API to add a new product")
+	@ApiResponses({ @ApiResponse(responseCode = "201", description = "Product is added successfully"),
+			@ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PostMapping("/admin/categories/{categoryId}/product")
-	public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO,
+	public ResponseEntity<ProductDTO> addProduct(
+			@Parameter(description = "Product that you wish to add") @Valid @RequestBody ProductDTO productDTO,
 			@PathVariable Long categoryId) {
 
 		ProductDTO savedProductDTO = productService.addProduct(categoryId, productDTO);
 		return new ResponseEntity<>(savedProductDTO, HttpStatus.CREATED);
 	}
 
+	@Tag(name = "Product APIs", description = "APIs for managing products")
 	@GetMapping("/public/products")
 	public ResponseEntity<ProductResponse> getAllProducts(
 			@RequestParam(name = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -48,6 +61,7 @@ public class ProductController {
 		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
+	@Tag(name = "Product APIs", description = "APIs for managing products")
 	@GetMapping("/public/categories/{categoryId}/products")
 	public ResponseEntity<ProductResponse> getProductByCategory(@PathVariable Long categoryId,
 			@RequestParam(name = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -60,6 +74,7 @@ public class ProductController {
 		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
+	@Tag(name = "Product APIs", description = "APIs for managing products")
 	@GetMapping("/public/products/keyword/{keyword}")
 	public ResponseEntity<ProductResponse> getProductsByKeyword(@PathVariable String keyword,
 			@RequestParam(name = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -73,6 +88,7 @@ public class ProductController {
 		return new ResponseEntity<>(productResponse, HttpStatus.OK);
 	}
 
+	@Tag(name = "Product APIs", description = "APIs for managing products")
 	@PutMapping("/admin/products/{productId}")
 	public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
 			@PathVariable Long productId) {
@@ -81,13 +97,16 @@ public class ProductController {
 		return new ResponseEntity<>(updatedProductDTO, HttpStatus.OK);
 	}
 
+	@Tag(name = "Product APIs", description = "APIs for managing products")
 	@DeleteMapping("/admin/products/{productId}")
-	public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long productId) {
+	public ResponseEntity<ProductDTO> deleteProduct(
+			@Parameter(description = "Id of the Product that you wish to delete") @PathVariable Long productId) {
 		ProductDTO deletedProductDTO = productService.deleteProduct(productId);
 
 		return new ResponseEntity<>(deletedProductDTO, HttpStatus.OK);
 	}
 
+	@Tag(name = "Product APIs", description = "APIs for managing products")
 	@PutMapping("/products/{productId}/image")
 	public ResponseEntity<ProductDTO> updateProductImage(@PathVariable Long productId,
 			@RequestParam("image") MultipartFile image) throws IOException {
