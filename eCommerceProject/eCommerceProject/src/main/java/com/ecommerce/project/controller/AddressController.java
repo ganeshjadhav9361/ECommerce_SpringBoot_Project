@@ -19,6 +19,11 @@ import com.ecommerce.project.payload.AddressDTO;
 import com.ecommerce.project.service.AddressService;
 import com.ecommerce.project.util.AuthUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
@@ -31,6 +36,11 @@ public class AddressController {
 	@Autowired
 	private AddressService addressService;
 
+	@Tag(name = "Address APIs", description = "APIs for managing address")
+	@Operation(summary = "Add address", description = "API to add a new address")
+	@ApiResponses({ @ApiResponse(responseCode = "201", description = "Address is added successfully"),
+			@ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PostMapping("/addresses")
 	public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody AddressDTO addressDTO) {
 		User user = authUtil.loggedInUser();
@@ -39,13 +49,21 @@ public class AddressController {
 		return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
 	}
 
+	@Tag(name = "Address APIs", description = "APIs for managing address")
+	@Operation(summary = "Fetch All address", description = "API to fetch all address")
+	@ApiResponses({ @ApiResponse(responseCode = "404", description = "Address Not Found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/addresses")
 	public ResponseEntity<List<AddressDTO>> getAddress() {
-		List<AddressDTO> addressDTOList = addressService.getAddress();
+		List<AddressDTO> addressDTOList = addressService.getAddresses();
 
 		return new ResponseEntity<>(addressDTOList, HttpStatus.OK);
 	}
 
+	@Tag(name = "Address APIs", description = "APIs for managing address")
+	@Operation(summary = "Fetch address by Id", description = "API to fetch address by addressId")
+	@ApiResponses({ @ApiResponse(responseCode = "404", description = "Address Not Found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/addresses/{addressId}")
 	public ResponseEntity<AddressDTO> getAddressByID(@PathVariable Long addressId) {
 		AddressDTO addressDTO = addressService.getAddressById(addressId);
@@ -53,6 +71,10 @@ public class AddressController {
 		return new ResponseEntity<>(addressDTO, HttpStatus.OK);
 	}
 
+	@Tag(name = "Address APIs", description = "APIs for managing address")
+	@Operation(summary = "Fetch user address", description = "API to fetch user address by Id")
+	@ApiResponses({ @ApiResponse(responseCode = "404", description = "Address Not Found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/user/addresses")
 	public ResponseEntity<List<AddressDTO>> getUserAddress() {
 		User user = authUtil.loggedInUser();
@@ -61,6 +83,9 @@ public class AddressController {
 		return new ResponseEntity<>(addressDTO, HttpStatus.OK);
 	}
 
+	@Tag(name = "Address APIs", description = "APIs for managing address")
+	@Operation(summary = "Update address", description = "API to update the address by addressId")
+	@ApiResponses({ @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PutMapping("/addresses/{addressId}")
 	public ResponseEntity<AddressDTO> updateAddress(@PathVariable Long addressId, @RequestBody AddressDTO addressDTO) {
 		AddressDTO updatedAddress = addressService.updateAddress(addressId, addressDTO);
@@ -68,6 +93,9 @@ public class AddressController {
 		return new ResponseEntity<>(updatedAddress, HttpStatus.OK);
 	}
 
+	@Tag(name = "Address APIs", description = "APIs for managing address")
+	@Operation(summary = "Delete address", description = "API to delete the address by addressId")
+	@ApiResponses({ @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@DeleteMapping("/addresses/{addressId}")
 	public ResponseEntity<String> deleteAddress(@PathVariable Long addressId) {
 		String status = addressService.deleteAddress(addressId);

@@ -50,6 +50,9 @@ public class ProductController {
 	}
 
 	@Tag(name = "Product APIs", description = "APIs for managing products")
+	@Operation(summary = "Fetch All product", description = "API to fetch all products")
+	@ApiResponses({ @ApiResponse(responseCode = "404", description = "Product Not Found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/public/products")
 	public ResponseEntity<ProductResponse> getAllProducts(
 			@RequestParam(name = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -62,6 +65,9 @@ public class ProductController {
 	}
 
 	@Tag(name = "Product APIs", description = "APIs for managing products")
+	@Operation(summary = "Fetch product by Category", description = "API to fetch products by Category")
+	@ApiResponses({ @ApiResponse(responseCode = "404", description = "Product Not Found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/public/categories/{categoryId}/products")
 	public ResponseEntity<ProductResponse> getProductByCategory(@PathVariable Long categoryId,
 			@RequestParam(name = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -75,6 +81,9 @@ public class ProductController {
 	}
 
 	@Tag(name = "Product APIs", description = "APIs for managing products")
+	@Operation(summary = "Fetch product by keyword", description = "API to fetch products by keyword")
+	@ApiResponses({ @ApiResponse(responseCode = "404", description = "Product Not Found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/public/products/keyword/{keyword}")
 	public ResponseEntity<ProductResponse> getProductsByKeyword(@PathVariable String keyword,
 			@RequestParam(name = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
@@ -89,6 +98,8 @@ public class ProductController {
 	}
 
 	@Tag(name = "Product APIs", description = "APIs for managing products")
+	@Operation(summary = "Update product", description = "API to update the product by productId")
+	@ApiResponses({ @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PutMapping("/admin/products/{productId}")
 	public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
 			@PathVariable Long productId) {
@@ -98,6 +109,8 @@ public class ProductController {
 	}
 
 	@Tag(name = "Product APIs", description = "APIs for managing products")
+	@Operation(summary = "Delete product", description = "API to delete the product by productId")
+	@ApiResponses({ @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@DeleteMapping("/admin/products/{productId}")
 	public ResponseEntity<ProductDTO> deleteProduct(
 			@Parameter(description = "Id of the Product that you wish to delete") @PathVariable Long productId) {
@@ -107,6 +120,8 @@ public class ProductController {
 	}
 
 	@Tag(name = "Product APIs", description = "APIs for managing products")
+	@Operation(summary = "Update product Image", description = "API to update the product image by productId")
+	@ApiResponses({ @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PutMapping("/products/{productId}/image")
 	public ResponseEntity<ProductDTO> updateProductImage(@PathVariable Long productId,
 			@RequestParam("image") MultipartFile image) throws IOException {

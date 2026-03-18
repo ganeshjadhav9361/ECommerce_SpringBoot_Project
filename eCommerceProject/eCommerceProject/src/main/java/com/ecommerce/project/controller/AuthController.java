@@ -36,6 +36,11 @@ import com.ecommerce.project.security.response.LoginResponse;
 import com.ecommerce.project.security.response.MessageResponse;
 import com.ecommerce.project.security.services.UserDetailsImpl;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
@@ -57,6 +62,11 @@ public class AuthController {
 	@Autowired
 	private RoleRepository roleRepository;
 
+	@Tag(name = "Authentication APIs", description = "APIs for managing authentication")
+	@Operation(summary = "Login user", description = "Authenticate user and generate JWT cookie")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "User logged in successfully"),
+			@ApiResponse(responseCode = "404", description = "Invalid credentials"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 		Authentication authentication;
@@ -84,6 +94,11 @@ public class AuthController {
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body(response);
 	}
 
+	@Tag(name = "Authentication APIs", description = "APIs for managing authentication")
+	@Operation(summary = "Register user", description = "API to register a new user")
+	@ApiResponses({ @ApiResponse(responseCode = "201", description = "User is added successfully"),
+			@ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
 		if (userRepository.existsByUserName(signupRequest.getUsername())) {
@@ -135,6 +150,11 @@ public class AuthController {
 		return ResponseEntity.ok(new MessageResponse("User registered successfully"));
 	}
 
+	@Tag(name = "Authentication APIs", description = "APIs for managing authentication")
+	@Operation(summary = "Get current username", description = "Fetch logged-in username")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Username fetched successfully"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@GetMapping("/username")
 	public String currentUserName(Authentication authentication) {
 		if (authentication != null) {
@@ -144,6 +164,11 @@ public class AuthController {
 		return "";
 	}
 
+	@Tag(name = "Authentication APIs", description = "APIs for managing authentication")
+	@Operation(summary = "Get user details", description = "Fetch logged-in user information")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "User details fetched successfully"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@GetMapping("/user")
 	public ResponseEntity<?> getUserDetails(Authentication authentication) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -157,6 +182,10 @@ public class AuthController {
 
 	}
 
+	@Tag(name = "Authentication APIs", description = "APIs for managing authentication")
+	@Operation(summary = "Logout user", description = "Invalidate JWT cookie and logout user")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "User logged out successfully"),
+			@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@PostMapping("/signout")
 	public ResponseEntity<?> signoutUser() {
 		ResponseCookie cookie = jwtUtils.getCleanJwtCookie();

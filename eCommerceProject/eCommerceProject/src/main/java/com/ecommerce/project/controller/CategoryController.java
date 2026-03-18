@@ -42,8 +42,10 @@ public class CategoryController {
 	}
 
 	@Tag(name = "Category APIs", description = "APIs for managing categories")
+	@Operation(summary = "Fetch All categories", description = "API to fetch all categories")
+	@ApiResponses({ @ApiResponse(responseCode = "404", description = "Category Not Found", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@GetMapping("/public/categories")
-	// @RequestMapping(value = "/public/categories", method = RequestMethod.GET)
 	public ResponseEntity<CategoryResponse> getAllCategories(
 			@RequestParam(name = "pageNumber", defaultValue = AppConstant.PAGE_NUMBER, required = false) Integer pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = AppConstant.PAGE_SIZE, required = false) Integer pageSize,
@@ -60,16 +62,15 @@ public class CategoryController {
 			@ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
 			@ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PostMapping("/public/categories")
-	// @RequestMapping(value = "/public/categories", method = RequestMethod.POST)
 	public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
 		CategoryDTO savedCategoryDTO = categoryService.createCategory(categoryDTO);
 		return new ResponseEntity<>(savedCategoryDTO, HttpStatus.CREATED);
 	}
 
 	@Tag(name = "Category APIs", description = "APIs for managing categories")
+	@Operation(summary = "Delete category", description = "API to delete the category by categoryId")
+	@ApiResponses({ @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@DeleteMapping("/admin/categories/{categoryId}")
-	// @RequestMapping(value = "/admin/categories/{categoryId}", method
-	// =RequestMethod.DELETE)
 	public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long categoryId) {
 
 		CategoryDTO deletedCategoryDTO = categoryService.deleteCategory(categoryId);
@@ -77,9 +78,9 @@ public class CategoryController {
 	}
 
 	@Tag(name = "Category APIs", description = "APIs for managing categories")
+	@Operation(summary = "Update category", description = "API to update the category by categoryId")
+	@ApiResponses({ @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content) })
 	@PutMapping("/public/categories/{categoryId}")
-	// @RequestMapping(value = "/public/categories/{categoryId}", method =
-	// RequestMethod.PUT)
 	public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO,
 			@PathVariable Long categoryId) {
 
